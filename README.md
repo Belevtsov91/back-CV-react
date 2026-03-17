@@ -121,8 +121,7 @@ Copy `.env.example` to `.env` and fill in the values.
 | `MESSAGE_RATE_LIMIT_MAX` | Max messages per window per IP (default: `3`) |
 | `TELEGRAM_BOT_TOKEN` | Bot token from [@BotFather](https://t.me/BotFather) |
 | `TELEGRAM_CHAT_ID` | Your personal chat ID to receive notifications |
-| `BREVO_SMTP_USER` | Brevo SMTP login |
-| `BREVO_SMTP_KEY` | Brevo SMTP API key |
+| `BREVO_API_KEY` | Brevo API key (`xkeysib-...`) |
 | `NOTIFY_EMAIL` | Email address to receive notifications |
 | `SMTP_FROM_EMAIL` | Sender address for outgoing emails |
 | `MONGODB_URI` | MongoDB Atlas connection string |

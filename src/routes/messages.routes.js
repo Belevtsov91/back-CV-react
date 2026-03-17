@@ -96,8 +96,7 @@ function createMessageRouter(env) {
         const [tgResult, emailResult] = await Promise.allSettled([
           sendTelegramMessage(env.TELEGRAM_BOT_TOKEN, env.TELEGRAM_CHAT_ID, text),
           sendNotificationEmail({
-            smtpUser: env.BREVO_SMTP_USER,
-            smtpKey: env.BREVO_SMTP_KEY,
+            apiKey: env.BREVO_API_KEY,
             fromEmail: env.SMTP_FROM_EMAIL,
             toEmail: env.NOTIFY_EMAIL,
             name, email, subject, message,
@@ -121,8 +120,7 @@ function createMessageRouter(env) {
 
         // ── Confirmation email — fire-and-forget ────────────────────────────
         sendConfirmationEmail({
-          smtpUser: env.BREVO_SMTP_USER,
-          smtpKey: env.BREVO_SMTP_KEY,
+          apiKey: env.BREVO_API_KEY,
           fromEmail: env.SMTP_FROM_EMAIL,
           toEmail: email,
           name, subject, message,

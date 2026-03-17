@@ -1,29 +1,30 @@
-const nodemailer = require("nodemailer");
-
-let _transport = null;
-
-function getTransport(smtpUser, smtpKey) {
-  if (!_transport) {
-    _transport = nodemailer.createTransport({
-      host: "smtp-relay.brevo.com",
-      port: 587,
-      auth: {
-        user: smtpUser,
-        pass: smtpKey,
-      },
-      connectionTimeout: 10_000,
-      socketTimeout: 10_000,
-    });
-  }
-  return _transport;
-}
-
 function escHtml(str) {
   return String(str)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+async function sendBrevoEmail({ apiKey, fromEmail, fromName, toEmail, subject, html }) {
+  const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "api-key": apiKey,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      sender: { name: fromName, email: fromEmail },
+      to: [{ email: toEmail }],
+      subject,
+      htmlContent: html,
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Brevo API error ${res.status}: ${body}`);
+  }
 }
 
 function buildConfirmationHtml({ name, subject, message }) {
@@ -77,16 +78,13 @@ function buildConfirmationHtml({ name, subject, message }) {
   <tr>
     <td align="center">
 
-      <!-- outer container -->
       <table class="ec" width="100%" cellpadding="0" cellspacing="0" border="0"
         style="max-width:580px;background-color:#1a1a2e;border-radius:16px;border:1px solid #2a2a46;overflow:hidden;">
 
-        <!-- top accent bar -->
         <tr>
           <td style="height:4px;background:linear-gradient(90deg,#9251f7 0%,#6c8cf7 100%);font-size:0;line-height:0;">&nbsp;</td>
         </tr>
 
-        <!-- header -->
         <tr>
           <td class="eh" style="padding:36px 40px 22px;background-color:#1a1a2e;">
             <p style="margin:0 0 2px;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#55557a;">VITALII BELEVTSOV</p>
@@ -95,14 +93,12 @@ function buildConfirmationHtml({ name, subject, message }) {
           </td>
         </tr>
 
-        <!-- divider -->
         <tr>
           <td class="dv" style="padding:0 40px;">
             <div style="height:1px;background-color:#2a2a46;font-size:0;line-height:0;">&nbsp;</div>
           </td>
         </tr>
 
-        <!-- body -->
         <tr>
           <td class="eb" style="padding:30px 40px;">
 
@@ -112,7 +108,6 @@ function buildConfirmationHtml({ name, subject, message }) {
               <span style="color:#e0e0f0;font-weight:600;">24 hours</span>.
             </p>
 
-            <!-- quoted message block -->
             <table class="qb" width="100%" cellpadding="0" cellspacing="0" border="0"
               style="background-color:#11112a;border-radius:10px;border:1px solid #2a2a46;margin-bottom:28px;">
               <tr>
@@ -134,10 +129,8 @@ function buildConfirmationHtml({ name, subject, message }) {
               </tr>
             </table>
 
-            <!-- links label -->
             <p style="margin:0 0 12px;font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:#55557a;">In the meantime</p>
 
-            <!-- link buttons — 3 cells, stack on mobile -->
             <table class="lt" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td class="lc" style="padding-right:8px;padding-bottom:8px;white-space:nowrap;">
@@ -164,14 +157,12 @@ function buildConfirmationHtml({ name, subject, message }) {
           </td>
         </tr>
 
-        <!-- divider -->
         <tr>
           <td class="dv" style="padding:0 40px;">
             <div style="height:1px;background-color:#2a2a46;font-size:0;line-height:0;">&nbsp;</div>
           </td>
         </tr>
 
-        <!-- footer -->
         <tr>
           <td class="ef" style="padding:18px 40px 26px;background-color:#13132a;">
             <p style="margin:0 0 2px;font-size:13px;font-weight:600;color:#e0e0f0;">Vitalii Belevtsov</p>
@@ -196,8 +187,7 @@ function buildConfirmationHtml({ name, subject, message }) {
 }
 
 function sendNotificationEmail({
-  smtpUser,
-  smtpKey,
+  apiKey,
   fromEmail,
   toEmail,
   name,
@@ -206,11 +196,11 @@ function sendNotificationEmail({
   message,
   source,
 }) {
-  const transport = getTransport(smtpUser, smtpKey);
-
-  return transport.sendMail({
-    from: `"CV Bot" <${fromEmail}>`,
-    to: toEmail,
+  return sendBrevoEmail({
+    apiKey,
+    fromEmail,
+    fromName: "CV Bot",
+    toEmail,
     subject: `📬 New message from ${name}`,
     html: `
       <h2>New message from CV</h2>
@@ -225,19 +215,18 @@ function sendNotificationEmail({
 }
 
 function sendConfirmationEmail({
-  smtpUser,
-  smtpKey,
+  apiKey,
   fromEmail,
   toEmail,
   name,
   subject,
   message,
 }) {
-  const transport = getTransport(smtpUser, smtpKey);
-
-  return transport.sendMail({
-    from: `"Vitalii Belevtsov" <${fromEmail}>`,
-    to: toEmail,
+  return sendBrevoEmail({
+    apiKey,
+    fromEmail,
+    fromName: "Vitalii Belevtsov",
+    toEmail,
     subject: `Got your message, ${name} ✓`,
     html: buildConfirmationHtml({ name, subject, message }),
   });

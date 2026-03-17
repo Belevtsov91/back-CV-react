@@ -211,8 +211,7 @@ function createBot(env) {
 
         // ── Notification email ───────────────────────────────────────────────
         sendNotificationEmail({
-          smtpUser: env.BREVO_SMTP_USER,
-          smtpKey: env.BREVO_SMTP_KEY,
+          apiKey: env.BREVO_API_KEY,
           fromEmail: env.SMTP_FROM_EMAIL,
           toEmail: env.NOTIFY_EMAIL,
           name, email, subject, message,
@@ -221,8 +220,7 @@ function createBot(env) {
 
         // ── Confirmation email ───────────────────────────────────────────────
         sendConfirmationEmail({
-          smtpUser: env.BREVO_SMTP_USER,
-          smtpKey: env.BREVO_SMTP_KEY,
+          apiKey: env.BREVO_API_KEY,
           fromEmail: env.SMTP_FROM_EMAIL,
           toEmail: email,
           name, subject, message,
