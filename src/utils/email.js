@@ -91,7 +91,7 @@ function buildConfirmationHtml({ name, subject, message }) {
           <td class="eh" style="padding:36px 40px 22px;background-color:#1a1a2e;">
             <p style="margin:0 0 2px;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#55557a;">VITALII BELEVTSOV</p>
             <p class="ht" style="margin:0;font-size:19px;font-weight:700;color:#e0e0f0;line-height:1.3;">Junior Frontend /</p>
-            <p class="ht" style="margin:0;font-size:19px;font-weight:700;color:#9a5cf7;line-height:1.3;">Junior Full-Stack Developer</p>
+            <p class="ht" style="margin:0;font-size:19px;font-weight:700;color:#9a5cf7;line-height:1.3;">Full-Stack Developer</p>
           </td>
         </tr>
 
@@ -141,7 +141,7 @@ function buildConfirmationHtml({ name, subject, message }) {
             <table class="lt" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td class="lc" style="padding-right:8px;padding-bottom:8px;white-space:nowrap;">
-                  <a class="lb" href="https://belevtsov.dev"
+                  <a class="lb" href="https://belevtsov-dev.vercel.app"
                     style="display:inline-block;padding:8px 16px;background-color:rgba(146,81,247,0.14);border:1px solid rgba(146,81,247,0.38);border-radius:8px;font-size:12px;font-weight:600;color:#c09af5;text-decoration:none;white-space:nowrap;">
                     🌐&nbsp;belevtsov.dev
                   </a>
@@ -177,11 +177,11 @@ function buildConfirmationHtml({ name, subject, message }) {
             <p style="margin:0 0 2px;font-size:13px;font-weight:600;color:#e0e0f0;">Vitalii Belevtsov</p>
             <p style="margin:0 0 14px;font-size:12px;color:#55557a;">
               vitaliybelevcov@gmail.com &nbsp;·&nbsp;
-              <a href="https://belevtsov.dev" style="color:#55557a;text-decoration:none;">belevtsov.dev</a>
+              <a href="https://belevtsov-dev.vercel.app" style="color:#55557a;text-decoration:none;">belevtsov.dev</a>
             </p>
             <p style="margin:0;font-size:11px;line-height:1.55;color:#3c3c5a;">
               You're receiving this because you submitted the contact form at
-              <a href="https://belevtsov.dev" style="color:#3c3c5a;text-decoration:underline;">belevtsov.dev</a>.
+              <a href="https://belevtsov-dev.vercel.app" style="color:#3c3c5a;text-decoration:underline;">belevtsov.dev</a>.
             </p>
           </td>
         </tr>

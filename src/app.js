@@ -66,6 +66,17 @@ function createApp(env, bot = null) {
     })
   );
 
+  // ── Health route — registered BEFORE global rate limit so Render's
+  //    health checker is never blocked by the global limiter ──────────────────
+  const healthLimiter = rateLimit({
+    windowMs: 60_000,
+    max: 60,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: rateLimitMessage("Too many requests. Please try again later."),
+  });
+  app.use("/api", healthLimiter, createHealthRouter(env));
+
   // ── Global rate limit ───────────────────────────────────────────────────────
   app.use(
     rateLimit({
@@ -76,15 +87,6 @@ function createApp(env, bot = null) {
       message: rateLimitMessage("Too many requests. Please try again later."),
     })
   );
-
-  // ── Stricter rate limit on health (prevent info-leak abuse) ────────────────
-  const healthLimiter = rateLimit({
-    windowMs: 60_000,
-    max: 60,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: rateLimitMessage("Too many requests. Please try again later."),
-  });
 
   // ── Body parsing ────────────────────────────────────────────────────────────
   app.use(express.json({ limit: "10kb" }));
@@ -120,7 +122,6 @@ function createApp(env, bot = null) {
     })
   );
 
-  app.use("/api", healthLimiter, createHealthRouter(env));
   app.use("/api", createMessageRouter(env));
 
   // Telegram webhook endpoint — registered only when bot + webhook URL are provided

@@ -7,6 +7,10 @@
   },
   servers: [
     {
+      url: "https://back-cv-react.onrender.com",
+      description: "Production"
+    },
+    {
       url: "http://localhost:4000",
       description: "Local development"
     }

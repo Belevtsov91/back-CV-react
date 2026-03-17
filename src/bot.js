@@ -6,6 +6,8 @@ const mainKeyboard = Markup.keyboard([
   ["✉️ Send Message", "ℹ️ About Vitalii"],
 ]).resize();
 
+const cancelKeyboard = Markup.keyboard([["❌ Cancel"]]).resize();
+
 // In-memory state: chatId → { step, name, email, subject, lastActivity }
 const sessions = new Map();
 
@@ -83,11 +85,21 @@ function createBot(env) {
         `💼 Junior Frontend / Full-Stack Developer\n` +
         `📍 Brasov, Romania\n\n` +
         `🛠 Stack: React, Node.js, Express, JS/TS\n` +
-        `🌐 <a href="https://belevtsov.dev">belevtsov.dev</a>\n` +
+        `🌐 <a href="https://belevtsov-dev.vercel.app">belevtsov.dev</a>\n` +
         `📧 vitaliybelevcov@gmail.com`,
       { parse_mode: "HTML" }
     ).catch((err) => console.error("[bot] about reply error:", err.message));
   });
+
+  // ── Cancel / restart ───────────────────────────────────────────────────────
+  const handleCancel = (ctx) => {
+    sessions.delete(ctx.chat.id);
+    ctx.reply("Cancelled. What would you like to do?", mainKeyboard)
+      .catch((err) => console.error("[bot] cancel reply error:", err.message));
+  };
+
+  bot.command("cancel", handleCancel);
+  bot.hears("❌ Cancel", handleCancel);
 
   // ── Send Message ───────────────────────────────────────────────────────────
   bot.hears("✉️ Send Message", async (ctx) => {
@@ -97,7 +109,7 @@ function createBot(env) {
         return;
       }
       sessions.set(ctx.chat.id, { step: "waiting_name", lastActivity: Date.now() });
-      await ctx.reply("What's your name?", Markup.removeKeyboard());
+      await ctx.reply("What's your name?", cancelKeyboard);
     } catch (err) {
       console.error("[bot] send message handler error:", err.message);
     }
@@ -116,7 +128,7 @@ function createBot(env) {
       await ctx.answerCbQuery(`"${session.subject}" selected`);
       await ctx.reply(
         `📌 Subject: <b>${esc(session.subject)}</b>\n\nYour message?`,
-        { parse_mode: "HTML" }
+        { parse_mode: "HTML", ...cancelKeyboard }
       );
     } catch (err) {
       console.error("[bot] subject action error:", err.message);
@@ -135,11 +147,11 @@ function createBot(env) {
       if (session.step === "waiting_name") {
         session.name = text;
         session.step = "waiting_email";
-        await ctx.reply("Your email address?");
+        await ctx.reply("Your email address?", cancelKeyboard);
 
       } else if (session.step === "waiting_email") {
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) {
-          await ctx.reply("That doesn't look like a valid email. Try again:");
+          await ctx.reply("That doesn't look like a valid email. Try again:", cancelKeyboard);
           return;
         }
         session.email = text;

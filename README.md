@@ -1,6 +1,6 @@
 # back-CV-react — Contact API for belevtsov.dev
 
-Express backend that handles contact form submissions from [belevtsov.dev](https://belevtsov.dev).
+Express backend that handles contact form submissions from [belevtsov.dev](https://belevtsov-dev.vercel.app).
 On each submission it fires a **Telegram notification**, sends a **notification email** to the owner, and delivers a **confirmation email** to the sender.
 
 **Frontend:** [CV-React](https://github.com/Belevtsov91/CV-React)
@@ -28,7 +28,7 @@ On each submission it fires a **Telegram notification**, sends a **notification 
 
 - **Zod schema validation** — name, email, subject, message validated server-side with clear error messages
 - **Honeypot bot protection** — `website` field present but silently accepted; bots that fill it get a fake `201` response
-- **Two-layer rate limiting** — global (100 req / 15 min per IP) + per-route (10 msg / 10 min per IP)
+- **Two-layer rate limiting** — global (100 req / 15 min per IP) + per-route (3 msg / 24 h per IP)
 - **Telegram notification** — formatted HTML message sent to owner's chat via bot
 - **Dual email flow** — notification to owner + auto-confirmation to sender run in parallel; confirmation is fire-and-forget (won't fail the request if it errors)
 - **MongoDB persistence** — every submission saved to Atlas with geo, source, and timestamps
@@ -114,7 +114,7 @@ Copy `.env.example` to `.env` and fill in the values.
 |---|---|
 | `PORT` | Server port (default: `4000`) |
 | `NODE_ENV` | `development` or `production` |
-| `FRONTEND_ORIGIN` | Allowed CORS origin (e.g. `https://belevtsov.dev`) |
+| `FRONTEND_ORIGIN` | Allowed CORS origin (e.g. `https://belevtsov-dev.vercel.app`) |
 | `GLOBAL_RATE_LIMIT_WINDOW_MS` | Global rate limit window in ms (default: `900000` = 15 min) |
 | `GLOBAL_RATE_LIMIT_MAX` | Max requests per window per IP (default: `100`) |
 | `MESSAGE_RATE_LIMIT_WINDOW_MS` | Per-route rate limit window in ms (default: `86400000` = 24 h) |

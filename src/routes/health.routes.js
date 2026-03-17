@@ -7,7 +7,7 @@ function createHealthRouter(env) {
   router.get("/health", (req, res) => {
     const dbReady = mongoose.connection.readyState === 1;
     const status = dbReady ? "ok" : "degraded";
-    res.status(200).json({
+    res.status(dbReady ? 200 : 503).json({
       success: true,
       data: {
         status,
