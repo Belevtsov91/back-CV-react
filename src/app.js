@@ -44,6 +44,7 @@ function createApp(env, bot = null) {
   const app = express();
 
   app.disable("x-powered-by");
+  app.set("trust proxy", 1);
 
   // ── Security headers ────────────────────────────────────────────────────────
   app.use(
@@ -126,7 +127,7 @@ function createApp(env, bot = null) {
 
   // Telegram webhook endpoint — registered only when bot + webhook URL are provided
   if (bot && env.TELEGRAM_WEBHOOK_URL) {
-    app.use(WEBHOOK_PATH, bot.webhookCallback(WEBHOOK_PATH));
+    app.post(WEBHOOK_PATH, (req, res) => bot.handleUpdate(req.body, res));
     console.log("[bot] webhook endpoint registered:", WEBHOOK_PATH);
   }
 
